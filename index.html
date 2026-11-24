@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7cfd0">
+<meta name="description" content="Photobooth online Hari Guru Nasional 2026. Pilih frame, ambil foto, dan unduh hasilnya gratis.">
+<title>Photobooth Hari Guru Nasional 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#f7cfd0;--navy:#073d78;--coral:#ff7c9c;--cream:#fff8ef;--ink:#243044}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff1e8,#f8d7dc);font-family:Nunito,system-ui,sans-serif;color:var(--ink)}
+header{text-align:center;padding:30px 16px 18px}header .eyebrow{display:inline-block;background:#fff;border:1px solid #f3bfc5;border-radius:99px;padding:7px 14px;color:#b64b69;font-weight:900;font-size:12px;letter-spacing:1px}
+h1{font-size:clamp(28px,6vw,46px);line-height:1.05;margin:14px 0 8px;color:var(--navy);font-weight:900}header p{margin:0 auto;max-width:600px;color:#725b64}
+main{max-width:1050px;margin:auto;padding:12px 16px 46px;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);gap:22px;align-items:start}
+.panel{background:#fffdfb;border:1px solid #f4d7d5;border-radius:22px;padding:18px;box-shadow:0 12px 35px #9c66751a}
+h2{font-size:18px;margin:0 0 13px;color:var(--navy)}
+.templates{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.template{border:2px solid transparent;background:#fff4ef;border-radius:13px;padding:7px;cursor:pointer;color:#5c4650;font:inherit;font-size:12px;font-weight:800}
+.template.active{border-color:#e86d91;background:#fff0f4;box-shadow:0 0 0 3px #fce0e8}
+.template img{display:block;width:100%;height:130px;object-fit:contain;border-radius:7px;margin-bottom:5px}
+.camera-wrap{background:#17283b;border-radius:16px;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center;position:relative;margin-top:16px}
+video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none}
+#cameraPlaceholder{color:#fff;text-align:center;padding:20px;font-size:14px}
+#countdown{position:absolute;color:white;font-size:72px;font-weight:900;text-shadow:0 3px 18px #000;display:none}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+button,.upload-label{border:0;border-radius:99px;padding:12px 17px;font:800 14px Nunito;cursor:pointer;background:#f4e7e7;color:#713f53}
+button.primary{background:#e9658c;color:white}button.dark{background:var(--navy);color:white}button:disabled{opacity:.45;cursor:not-allowed}
+.hint{font-size:12px;color:#806d72;line-height:1.5;margin:12px 2px 0}
+.progress{font-size:13px;font-weight:800;color:#a64f6c;margin:12px 0 0}
+.preview{width:min(100%,310px);margin:0 auto;display:block;border-radius:8px;box-shadow:0 8px 25px #583f421c;background:#fff}
+.preview-box{background:#fff5f2;padding:12px;border-radius:15px;text-align:center}
+.preview-title{font-weight:900;color:var(--navy);margin-bottom:10px}
+.upload-label{display:inline-flex;align-items:center;gap:6px}
+input[type=file]{display:none}
+footer{text-align:center;padding:0 15px 28px;color:#8a6c73;font-size:12px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#173e68;color:white;padding:11px 18px;border-radius:99px;font-size:13px;box-shadow:0 5px 20px #0002;display:none;z-index:5}
+@media(max-width:760px){main{grid-template-columns:1fr;max-width:560px;padding:8px 12px 35px}.panel{padding:15px}.preview{width:min(78%,300px)}header{padding-top:24px}}
+</style>
+</head>
+<body>
+<header>
+ <span class="eyebrow">25 NOVEMBER 2026 · HARI GURU NASIONAL</span>
+ <h1>Photobooth Hari Guru 💐</h1>
+ <p>Abadikan momen spesial bersama guru tercinta. Pilih frame, ambil foto, lalu bagikan hasilnya!</p>
+</header>
+<main>
+ <section class="panel">
+  <h2>1. Pilih desain frame</h2>
+  <div class="templates" id="templates">
+   <button class="template active" data-index="0"><img src="assets/frame-special-day.png" alt="Frame Your Special Day">Your Special Day</button>
+   <button class="template" data-index="1"><img src="assets/frame-hari-guru.png" alt="Frame Hari Guru Nasional">Hari Guru 2026</button>
+   <button class="template" data-index="2"><img src="assets/frame-floral.png" alt="Frame bunga pastel">Floral Pastel</button>
+  </div>
+  <h2 style="margin-top:20px">2. Ambil foto</h2>
+  <div class="camera-wrap">
+   <video id="video" autoplay playsinline muted></video>
+   <div id="cameraPlaceholder">📸<br><br>Aktifkan kamera untuk mulai photobooth</div>
+   <div id="countdown">3</div>
+  </div>
+  <div class="actions">
+   <button class="primary" id="startCamera">Aktifkan Kamera</button>
+   <button class="dark" id="capture" disabled>Ambil Foto</button>
+   <button id="retake" disabled>Ulangi Semua</button>
+  </div>
+  <div class="progress" id="progress">Foto 0 dari 4</div>
+  <p class="hint">Tips: izinkan akses kamera saat browser meminta izin. Kamera membutuhkan koneksi HTTPS (website yang sudah dipublikasikan) atau localhost.</p>
+  <div class="actions">
+   <label class="upload-label" for="uploadPhoto">Atau unggah foto dari galeri</label>
+   <input id="uploadPhoto" type="file" accept="image/*" capture="user">
+  </div>
+ </section>
+ <section class="panel">
+  <h2>3. Hasil photobooth</h2>
+  <div class="preview-box">
+   <div class="preview-title">✨ Your Teacher Photo ✨</div>
+   <canvas id="result" class="preview" width="591" height="1773"></canvas>
+   <div class="actions" style="justify-content:center">
+    <button class="primary" id="download">Download PNG</button>
+   </div>
+   <p class="hint">Hasil foto diproses langsung di perangkatmu. Foto tidak dikirim atau disimpan ke server.</p>
+  </div>
+ </section>
+</main>
+<footer>Dibuat untuk merayakan Hari Guru Nasional 2026 · Selamat Hari Guru! ❤️</footer>
+<div class="toast" id="toast"></div>
+<script>
+const templates=[
+ {file:'assets/frame-special-day.png',slots:[[59,129,473,354],[59,516,473,354],[59,903,473,354],[59,1290,473,354]]},
+ {file:'assets/frame-hari-guru.png',slots:[[39,263,513,384],[39,684,513,384]]},
+ {file:'assets/frame-floral.png',slots:[[59,129,473,354],[59,516,473,354],[59,903,473,354],[59,1290,473,354]]}
+];
+const video=document.getElementById('video'), canvas=document.getElementById('result'), ctx=canvas.getContext('2d');
+const placeholder=document.getElementById('cameraPlaceholder'), countdown=document.getElementById('countdown');
+const captureBtn=document.getElementById('capture'), retakeBtn=document.getElementById('retake'), progress=document.getElementById('progress');
+let selected=0, photos=[], stream=null, frameImage=new Image();
+function notify(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
+function drawCover(image,x,y,w,h,mirror=false){
+ const scale=Math.max(w/image.width,h/image.height), sw=w/scale, sh=h/scale;
+ const sx=(image.width-sw)/2, sy=(image.height-sh)/2;
+ ctx.save(); if(mirror){ctx.translate(x+w,y);ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,0,0,w,h)}else ctx.drawImage(image,sx,sy,sw,sh,x,y,w,h); ctx.restore();
+}
+function render(){
+ const t=templates[selected]; ctx.clearRect(0,0,591,1773);
+ // Paint each captured photo into its window, then place the transparent frame on top.
+ t.slots.forEach((s,i)=>{if(photos[i]) drawCover(photos[i],...s,false);});
+ if(frameImage.complete)ctx.drawImage(frameImage,0,0,591,1773);
+ progress.textContent=`Foto ${photos.length} dari ${t.slots.length}`;
+}
+function loadFrame(){frameImage=new Image();frameImage.onload=render;frameImage.src=templates[selected].file;photos=[];render();captureBtn.disabled=!stream;retakeBtn.disabled=true}
+document.querySelectorAll('.template').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.template').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selected=Number(btn.dataset.index);loadFrame();
+}));
+async function startCamera(){
+ try{
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Browser tidak mendukung kamera. Buka website melalui HTTPS.');
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+  video.srcObject=stream;video.style.display='block';placeholder.style.display='none';captureBtn.disabled=false;
+  notify('Kamera berhasil diaktifkan!');
+ }catch(e){notify(e.message||'Kamera tidak dapat diakses. Periksa izin kamera browser.');}
+}
+document.getElementById('startCamera').addEventListener('click',startCamera);
+async function takePhoto(){
+ if(!stream)return;
+ captureBtn.disabled=true;countdown.style.display='block';
+ for(let n=3;n>0;n--){countdown.textContent=n;await new Promise(r=>setTimeout(r,700))}
+ countdown.style.display='none';
+ const shot=document.createElement('canvas');shot.width=video.videoWidth;shot.height=video.videoHeight;
+ const sctx=shot.getContext('2d');sctx.translate(shot.width,0);sctx.scale(-1,1);sctx.drawImage(video,0,0);
+ const img=new Image();img.src=shot.toDataURL('image/jpeg',.94);await img.decode();
+ photos.push(img);render();retakeBtn.disabled=false;
+ if(photos.length<templates[selected].slots.length){captureBtn.disabled=false;notify(`Foto ${photos.length} berhasil! Lanjut foto berikutnya.`)}
+ else{notify('Semua foto selesai! Silakan download hasilnya.');captureBtn.disabled=true}
+}
+captureBtn.addEventListener('click',takePhoto);
+retakeBtn.addEventListener('click',()=>{photos=[];render();captureBtn.disabled=!stream;retakeBtn.disabled=true});
+document.getElementById('uploadPhoto').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{const url=URL.createObjectURL(file),img=new Image();img.src=url;await img.decode();photos.push(img);render();retakeBtn.disabled=false;notify('Foto dari galeri berhasil ditambahkan.');}
+ catch{notify('Foto tidak dapat dibaca. Coba file gambar lain.')} e.target.value='';
+});
+document.getElementById('download').addEventListener('click',()=>{
+ if(!photos.length){notify('Ambil atau unggah foto terlebih dahulu.');return}
+ const a=document.createElement('a');a.download='photobooth-hari-guru-2026.png';a.href=canvas.toDataURL('image/png');a.click();
+});
+loadFrame();
+window.addEventListener('beforeunload',()=>stream?.getTracks().forEach(t=>t.stop()));
+</script>
+</body></html>
